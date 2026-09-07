@@ -27,29 +27,6 @@ export function formatSimulationError(
   const completedStepCount = context?.completedStepCount ?? 0;
 
   if (
-    lower.includes("exceeds allowance") ||
-    lower.includes("transfer amount exceeds allowance")
-  ) {
-    if (completedStepCount > 0) {
-      return {
-        title: "Almost there",
-        message:
-          "Your approval went through, but the network preview hasn't caught up yet. Wait a few seconds, then tap Try again.",
-        technicalDetails: raw,
-        retryable: true,
-      };
-    }
-
-    return {
-      title: "Approval needed",
-      message:
-        "This flow needs a token approval first. Tap Confirm to continue.",
-      technicalDetails: raw,
-      retryable: true,
-    };
-  }
-
-  if (
     lower.includes("insufficient balance") ||
     lower.includes("exceeds balance") ||
     lower.includes("network fees")
@@ -64,6 +41,29 @@ export function formatSimulationError(
         : "Your wallet doesn't have enough for this transaction. Try a smaller amount.",
       technicalDetails: raw,
       retryable: false,
+    };
+  }
+
+  if (completedStepCount > 0) {
+    return {
+      title: "Almost there",
+      message:
+        "Your approval went through, but the network preview hasn't caught up yet. Wait a few seconds, then tap Try again.",
+      technicalDetails: raw,
+      retryable: true,
+    };
+  }
+
+  if (
+    lower.includes("exceeds allowance") ||
+    lower.includes("transfer amount exceeds allowance")
+  ) {
+    return {
+      title: "Approval needed",
+      message:
+        "This flow needs a token approval first. Tap Confirm to continue.",
+      technicalDetails: raw,
+      retryable: true,
     };
   }
 

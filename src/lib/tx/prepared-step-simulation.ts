@@ -1,4 +1,4 @@
-import { simulatePreparedStep } from "@andrewkimjoseph/celina-sdk/simulation";
+import { simulatePreparedStepWithRetry } from "@andrewkimjoseph/celina-sdk/simulation";
 import { erc20Abi, parseUnits, type PublicClient } from "viem";
 import type { PreparedTx } from "@/lib/tx/prepared-flow";
 import { parseSupplyStepDescription } from "@/lib/tx/flow-preflight";
@@ -119,7 +119,7 @@ export async function simulatePreparedStepBeforeSend(
   }
 
   try {
-    await simulatePreparedStep(
+    await simulatePreparedStepWithRetry(
       publicClient as never,
       { account: from, step },
       feeCurrency ? { feeCurrency } : undefined,
