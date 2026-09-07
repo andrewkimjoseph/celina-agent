@@ -17,6 +17,7 @@ import {
 import { formatFlowSummary, formatWalletError } from "@/lib/tx/wallet-error";
 import { formatTransactionStep } from "@/lib/tx/transaction-display";
 import { useState } from "react";
+import { reportCelinaOnchainTxn } from "@andrewkimjoseph/celina-sdk";
 import { useAccount, usePublicClient, useSendTransaction } from "wagmi";
 import { trackEvent } from "@/lib/analytics/amplitude-browser";
 import { categorizeWalletError } from "@/lib/analytics/events";
@@ -327,6 +328,7 @@ export function TxConfirmCard({
           return;
         }
 
+        reportCelinaOnchainTxn(hash);
         sessionHashes.push(hash);
         setCompletedHashes([...sessionHashes]);
       }
