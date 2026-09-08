@@ -1,6 +1,6 @@
 {
   "name": "celeste-ai",
-  "version": "0.2.31",
+  "version": "0.2.32",
   "description": "DeFAI chat UI for Celo — applied Celina, a third-party, open-source Celo agent stack (SDK, MCP server, REST API). Connect a wallet, ask about balances, and prepare sends, swaps (Mento FX + Uniswap v4), and Aave actions — you sign in your wallet.",
   "private": true,
   "scripts": {
@@ -15,7 +15,7 @@
     "@ai-sdk/react": "^3.0.193",
     "@amplitude/analytics-browser": "^2.43.0",
     "@amplitude/analytics-node": "^1.3.8",
-    "@andrewkimjoseph/celina-sdk": "0.26.1",
+    "@andrewkimjoseph/celina-sdk": "0.26.2",
     "@rainbow-me/rainbowkit": "^2.2.11",
     "@tanstack/react-query": "^5.100.14",
     "ai": "^6.0.191",
