@@ -136,7 +136,7 @@ See [`.env.example`](.env.example):
 | `NEXT_PUBLIC_AMPLITUDE_DISABLED` | Set to `1` to disable browser analytics |
 | `NEXT_PUBLIC_AMPLITUDE_SERVER_ZONE` | Optional `EU` if your Amplitude project is EU-resident (default US) |
 
-Browser analytics (`NEXT_PUBLIC_AMPLITUDE_*`) tracks product UX events (wallet connect, chat, tx funnel). Celina SDK server telemetry (`celeste_ai` `device_id`, connected wallet as Amplitude `user_id` via `runWithAnalyticsWallet`) is a separate stream for read-tool usage. Opt out in [`src/lib/wallet/celina.ts`](src/lib/wallet/celina.ts) with `analyticsEnabled: false` on `createCelinaClient()`.
+Browser analytics (`NEXT_PUBLIC_AMPLITUDE_*`) tracks product UX events (wallet connect, chat, tx funnel). Celina SDK server telemetry (`celeste_ai` `device_id`, connected wallet as celina-stats-api `user_id` via `runWithAnalyticsWallet`) is a separate stream for read-tool usage. Opt out in [`src/lib/wallet/celina.ts`](src/lib/wallet/celina.ts) with `analyticsEnabled: false` on `createCelinaClient()`.
 
 ### Next.js config notes
 
