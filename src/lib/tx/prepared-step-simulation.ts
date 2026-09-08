@@ -1,7 +1,6 @@
 import { simulatePreparedStepWithRetry } from "@andrewkimjoseph/celina-sdk/simulation";
 import { erc20Abi, parseUnits, type PublicClient } from "viem";
 import type { PreparedTx } from "@/lib/tx/prepared-flow";
-import { parseSupplyStepDescription } from "@/lib/tx/flow-preflight";
 import { resolveMiniPayFeeCurrency } from "@/lib/minipay/minipay-fee-currency";
 import {
   checkMiniPaySpendBuffer,
@@ -30,18 +29,39 @@ const TOKEN_DECIMALS: Record<string, number> = {
   USDm: 18,
 };
 
+/**
+ * Matches the spend-side `{amount} {token}` of any prepared-step description that
+ * pulls funds from the wallet: `Supply ... to Aave`, `Swap {in} {sym} → ~{out} {sym}`
+ * (Mento FX / Uniswap v4 / GoodDollar reserve all share this shape), `Send {amount} CELO`,
+ * and `Transfer {amount} {token}`. Deliberately excludes `Approve`/`Withdraw`/`Permit2`
+ * steps, which don't spend the step's own token from the wallet.
+ */
+const SPEND_STEP_PATTERN = /^(?:Supply|Swap|Send|Transfer)\s+([\d,]+\.?\d*)\s+(\S+)/i;
+
+/** Parse the spend-side `{amount, token}` from a prepared step description. */
+export function parseSpendStepDescription(
+  description: string,
+): { amount: string; token: string } | null {
+  const match = description.match(SPEND_STEP_PATTERN);
+  if (!match) {
+    return null;
+  }
+
+  return { amount: match[1]!.replace(/,/g, ""), token: match[2]! };
+}
+
 async function checkStepMiniPaySpendBuffer(
   publicClient: PublicClient,
   from: `0x${string}`,
   step: PreparedTx,
   feeCurrency: `0x${string}`,
 ): Promise<PreparedStepSimulationFailure | null> {
-  const supply = parseSupplyStepDescription(step.description);
-  if (!supply) {
+  const spend = parseSpendStepDescription(step.description);
+  if (!spend) {
     return null;
   }
 
-  const entry = minipayEntryForSymbol(supply.token);
+  const entry = minipayEntryForSymbol(spend.token);
   if (!entry) {
     return null;
   }
@@ -49,7 +69,7 @@ async function checkStepMiniPaySpendBuffer(
   let spendAmountWei: bigint;
   try {
     spendAmountWei = parseUnits(
-      supply.amount,
+      spend.amount,
       TOKEN_DECIMALS[entry.symbol] ?? 18,
     );
   } catch {

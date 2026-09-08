@@ -128,16 +128,3 @@ export async function checkFlowPreflight(
     amount: parsed.amount,
   };
 }
-
-/** Parse "Supply {amount} {token}" from a prepared step description. */
-export function parseSupplyStepDescription(description: string): {
-  amount: string;
-  token: string;
-} | null {
-  const match = description.match(/^Supply\s+([\d.]+)\s+(\S+)\s+to\s+Aave/i);
-  if (!match) {
-    return null;
-  }
-
-  return { amount: match[1], token: match[2] };
-}
